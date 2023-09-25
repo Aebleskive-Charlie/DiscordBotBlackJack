@@ -7,8 +7,23 @@ client = discord.Client(intents=intents)
 
 TOK_FILE = "token.txt"
 
+card_deck = ["Ace_Of_Hearts", "", ]
+
+player_value = {}
+
 def get_token():
   tokfile = open(TOK_FILE, 'r')
   token = tokfile.read()
   tokfile.close()
   return token
+
+@client.event
+async def on_ready():
+    print("Connected!")
+
+@client.event
+async def on_message(message):
+    contents = message.content
+    user_id = message.author.id
+
+
