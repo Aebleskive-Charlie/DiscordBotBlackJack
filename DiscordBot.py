@@ -62,15 +62,18 @@ card_deck = {
   "King_Of_Spades": 10
   }
 
-
 player_value = {}
-dealer_value = {}
+dealer_value = 0
 
 def get_token():
   tokfile = open(TOK_FILE, 'r')
   token = tokfile.read()
   tokfile.close()
   return token
+
+def pull_cards():
+   card_list = list(card_deck.items())
+   card1 = random.choice()
 
 @client.event
 async def on_ready():
@@ -81,4 +84,5 @@ async def on_message(message):
     contents = message.content
     user_id = message.author.id
 
+    if contents.startswith("!playblackjack")
 
