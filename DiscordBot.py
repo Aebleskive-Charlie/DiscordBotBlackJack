@@ -73,11 +73,9 @@ def get_token():
   return token
 
 def pull_cards():
-   card_list = list(card_deck.items())
-   card1 = random.choice(card_list)
-   card2 = random.choice(card_list)
-   dealer_card1 = random.choice(card_list)
-   return card1, card2, dealer_card1
+   card_list = list(card_deck.keys())
+   card = random.choice(card_list)
+   return card
    
 
 @client.event
@@ -90,9 +88,17 @@ async def on_message(message):
     user_id = message.author.id
 
     if contents.startswith("!playblackjack"):
-      pull_cards()
-      player_value[user_id] = card_deck[card1] + card_deck[card2]
-      await message.channel.send("you pulled " + str(card1) + " and " str(card2))
+      player_card1 = pull_cards()
+      player_card2 = pull_cards()
+      if player_card2 == player_card1:
+         player_card2 = pull_cards()
+      player_value[user_id] = card_deck[player_card1] + card_deck[player_card2]
+      await message.channel.send ("you pulled " + str(player_card1) + " and " + str(player_card2))
+      await message.channel.send ("your value is " + str(player_value[user_id]))
+    
+    elif contents.startswith("!hit"):
+       player_card3 = pull_cards()
+
 
 token = get_token()
 client.run(token)
