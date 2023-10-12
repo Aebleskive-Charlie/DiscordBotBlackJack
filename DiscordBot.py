@@ -9,10 +9,10 @@ client = discord.Client(intents=intents)
 TOK_FILE = "token.txt"
 
 card_deck = {
-  "Ace_Of_Hearts": [1,11],
-  "Ace_Of_Spades": [1,11],
-  "Ace_Of_Clubs": [1,11],
-  "Ace_Of_Diamonds": [1,11],
+  "Ace_Of_Hearts": 1,
+  "Ace_Of_Spades": 1,
+  "Ace_Of_Clubs": 1,
+  "Ace_Of_Diamonds": 1,
   "Two_Of_Hearts": 2,
   "Two_Of_Diamonds": 2,
   "Two_Of_Clubs": 2,
@@ -77,7 +77,14 @@ def pull_cards():
    card = random.choice(card_list)
    return card
    
-
+def check_win(id):
+   if player_value[id] == 21:
+      return "Win"
+   elif player_value[id] > 21:
+      return "Lose"
+   else:
+      return "Neutral"
+      
 @client.event
 async def on_ready():
     print("Connected!")
@@ -95,9 +102,24 @@ async def on_message(message):
       player_value[user_id] = card_deck[player_card1] + card_deck[player_card2]
       await message.channel.send ("you pulled " + str(player_card1) + " and " + str(player_card2))
       await message.channel.send ("your value is " + str(player_value[user_id]))
+      await message.channel.send ("would you like to hit [!hit] or stand? [!stand]")
     
-    elif contents.startswith("!hit"):
-       player_card3 = pull_cards()
+    if contents.startswith("!hit"):
+      player_card3 = pull_cards()
+      player_value[user_id] += card_deck[player_card3]
+      win_check = check_win(user_id)
+      if win_check == "Win":
+         await message.channel.send ("you pulled " + str(player_card3) + " your new value is " + str(player_value[user_id]))
+         await message.channel.send ("WHATS 9+10? THATS RIGHT 21!!!!!!")
+      elif win_check == "Lose":
+         await message.channel.send ("you pulled " + str(player_card3) + " your new value is " + str(player_value[user_id]))
+         await message.channel.send ("looks like you went bust, your value is above 21 and therefore you lose.")
+      else:
+         await message.channel.send ("you pulled " + str(player_card3) + " your new value is " + str(player_value[user_id]))
+         await message.channel.send ("your new value is " + str(player_value[user_id]))
+         await message.channel.send ("would you like to hit [!hit] or stand? [!stand]")
+
+      
 
 
 token = get_token()
