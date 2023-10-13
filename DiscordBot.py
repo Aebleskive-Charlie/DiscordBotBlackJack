@@ -79,11 +79,9 @@ def pull_cards():
    
 def check_win(id):
    if player_value[id] == 21:
-      return "Win"
+      return True
    elif player_value[id] > 21:
-      return "Lose"
-   else:
-      return "Neutral"
+      return False
       
 @client.event
 async def on_ready():
@@ -106,12 +104,13 @@ async def on_message(message):
     
     if contents.startswith("!hit"):
       player_card3 = pull_cards()
+
       player_value[user_id] += card_deck[player_card3]
       win_check = check_win(user_id)
-      if win_check == "Win":
+      if win_check == True:
          await message.channel.send ("you pulled " + str(player_card3) + " your new value is " + str(player_value[user_id]))
          await message.channel.send ("WHATS 9+10? THATS RIGHT 21!!!!!!")
-      elif win_check == "Lose":
+      elif win_check == False:
          await message.channel.send ("you pulled " + str(player_card3) + " your new value is " + str(player_value[user_id]))
          await message.channel.send ("looks like you went bust, your value is above 21 and therefore you lose.")
       else:
@@ -119,7 +118,27 @@ async def on_message(message):
          await message.channel.send ("your new value is " + str(player_value[user_id]))
          await message.channel.send ("would you like to hit [!hit] or stand? [!stand]")
 
-      
+    if contents.startswith("!stand"):
+      await message.channel.send ("you chose to stand. NO BALLS!")
+      player = player_value[user_id]
+      dealer_card1 = pull_cards()
+      dealer_card2 = pull_cards()
+      dealer_value = card_deck[dealer_card1] + card_deck[dealer_card2]
+      await message.channel.send ("you have chosen to stand on a value of " + str(player_value[user_id]))
+      await message.channel.send ("i have pulled " + str(dealer_card1) + " and " + str(dealer_card2) + " my value is " + str(dealer_value))
+      while player >= dealer_value:
+         new_dealer_card = pull_cards()
+         dealer_value += card_deck[new_dealer_card]
+         await message.channel.send ("i have pulled " + str(new_dealer_card) + " my new value is " + str(dealer_value))
+         if dealer_value > player_value[user_id]:
+            break
+      if dealer_value <= 21:
+         await message.channel.send ("My value is higher than yours and therefore you lose!")
+      else:
+         await message.channel.send ("looks like i went bust trying to beat you and exceeded 21")
+         await message.channel.send ("YOU WIN!!!")
+          
+
 
 
 token = get_token()
