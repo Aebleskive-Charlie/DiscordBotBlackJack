@@ -92,7 +92,10 @@ async def on_message(message):
     contents = message.content
     user_id = message.author.id
 
-    if contents.startswith("!playblackjack"):
+    if contents.startswith("!diller"):
+       await message.channel.send ("HAHA FUNNY")   
+
+    if contents.startswith("!PBJ"):
       player_card1 = pull_cards()
       player_card2 = pull_cards()
       if player_card2 == player_card1:
@@ -137,6 +140,7 @@ async def on_message(message):
       else:
          await message.channel.send ("looks like i went bust trying to beat you and exceeded 21")
          await message.channel.send ("YOU WIN!!!")
+
           
 
 
